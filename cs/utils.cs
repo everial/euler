@@ -32,5 +32,13 @@ namespace Euler {
             h = g.Memoize();
             return h;
         }
+
+        /* Approximate the square root of the given BigInteger.
+         * WARNING: breaks when the square root exceeds Double.MaxValue.
+         * TODO: fix!
+         */
+        public static BigInteger SquareRoot(BigInteger value) {
+            return new BigInteger(Math.Exp(BigInteger.Log(value) / 2));
+        }
     }
 }

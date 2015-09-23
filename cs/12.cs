@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 /* Project Euler #12
@@ -8,32 +9,27 @@ using System.Numerics;
  * to have over five hundred divisors?
  */
 
-class E12 {
+namespace Euler {
 
-    private static Func<int, BigInteger> Triangle() {
-        return utils.MemoizeFix<int, BigInteger>(f => n => n == 1 ?
-                1 : f(n - 1));
+    class E12 {
 
-    private static IEnumerable<BigInteger> TriangleSequence() {
-        Func<int, BigInteger> generator = Triangle();
-        for (var i = 1; ; i++)
-            yield return Triangle(n);
-    }
+        private static IEnumerable<BigInteger> Triangles() {
+            var current = BigInteger.Zero;
+            for (var i = BigInteger.One; ; i++) {
+                current = current + i;
+                yield return current;
+            }
+        }
 
-    private static IEnumerable<BigInteger> Factor(BigInteger number) {
-        
-        
-    }
+        private const int _count = 500;
 
-    private static IEnumerable<IEnumerable<A>> PowerSet(IEnumerable<A> items) {
-
-    }
-
-    public static void Main(string[] args) {
-        foreach (var number in TriangleSequence()) {
-            var divisors = ;
-            if (divisors.Length > 500)
-                System.Console.WriteLine(number);
+        public static void Main(string[] args) {
+            foreach (var triangle in Triangles()) {
+                if (Primes.CountFactors(triangle) > _count) {
+                    Console.WriteLine(triangle);
+                    return;
+                }
+            }
         }
     }
 }
