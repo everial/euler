@@ -40,5 +40,36 @@ namespace Euler {
         public static BigInteger SquareRoot(BigInteger value) {
             return new BigInteger(Math.Exp(BigInteger.Log(value) / 2));
         }
+
+        /* Lazy, in-place generation of all permutations using Heap's algorithm.
+         * See Wikipedia for details.
+         * NOTE: the combination of in-place and lazy can be tricky!
+         */
+        public static IEnumerable<IList<T>> Permutations<T>(IList<T> source) {
+            return Permute(source.Count(), source);
+        }
+
+        private static IEnumerable<IList<T>> Permute<T>(int n, 
+                IList<T> source) {
+            if (n == 1)
+                yield return source;
+            else {
+                for (var i = 0; i < n - 1; i++) {
+                    foreach (var permutation in Permute(n - 1, source))
+                        yield return permutation;
+                    if (n % 2 == 0) {
+                        var temp = source[i];
+                        source[i] = source[n - 1];
+                        source[n - 1] = temp;
+                    } else {
+                        var temp = source[0];
+                        source[0] = source[n - 1];
+                        source[n - 1] = temp;
+                    }
+                }
+                foreach (var permutation in Permute(n - 1, source))
+                    yield return permutation;
+            }
+        }
     }
 }
