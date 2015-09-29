@@ -33,6 +33,26 @@ namespace Euler {
             return h;
         }
 
+        public static IEnumerable<IEnumerable<T>> PowerSet<T>(IEnumerable<T> 
+                set) {
+            var seed = new List<IEnumerable<T>>() { Enumerable.Empty<T>() }
+                as IEnumerable<IEnumerable<T>>;
+
+            return set.Aggregate(seed, (a, b) =>
+                    a.Concat(a.Select(x => x.Concat(new List<T>() { b }))));
+        }
+
+        /* Linq version as seen on rosettacode.org's power set page.
+         * TODO: test this against general IEnumerable version.
+         */
+        public static IEnumerable<IEnumerable<T>> PowerSet<T>(List<T> set) {
+            return from m in Enumerable.Range(0, 1 << set.Count)
+                select
+                    from i in Enumerable.Range(0, set.Count)
+                    where (m & (i << 1)) != 0
+                    select set[i];
+        }
+
         /* Approximate the square root of the given BigInteger.
          * WARNING: breaks when the square root exceeds Double.MaxValue.
          * TODO: fix!

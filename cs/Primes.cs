@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Euler {
 
-    public class Primes {
+    public static class Primes {
 
         public static readonly BigInteger Two = new BigInteger(2);
 
@@ -66,7 +66,7 @@ namespace Euler {
             return factors;
         }
 
-        public static bool IsPrime(BigInteger number) {
+        public static bool IsPrime(this BigInteger number) {
             if (number < Two)
                 return false;
 
@@ -107,7 +107,10 @@ namespace Euler {
         }
 
 #region int
-        // 
+/* Ideally we'd be able to shift between BigIntegers and machine integers
+ * as needed. For now we're keeping separate int versions of the methods 
+ * for speed. See the corresponding BigInteger methods for documentation.
+ */
         public static bool IsPrime(int number) {
             if (number < 2)
                 return false;
@@ -135,6 +138,52 @@ namespace Euler {
                     yield return candidate;
                 }
             }
+        }
+
+        public static IList<int> PrimeFactor(int factorMe) {
+            var factors = new List<int>();
+            var candidates = Primes.IntStream().TakeWhile(p => 
+                    p <= Math.Sqrt(factorMe));
+            if (!candidates.Any())
+                return factors;
+            
+            var remains = factorMe;
+            int remainder;
+            while (remains != 1) {
+                var factorFound = false;
+                foreach (var c in candidates) {
+                    var result = Math.DivRem(remains, c, out remainder);
+                    if (remainder == 0) {
+                        remains = result;
+                        factors.Add(c);
+                        factorFound = true;
+                        break;
+                    }
+                }
+                // Checked all the possibilities up to square root so what
+                // remains must be prime.
+                if (!factorFound && remains > candidates.Last()) { 
+                    factors.Add(remains);
+                    break;
+                }
+            }
+            return factors;
+        }
+
+        // TODO: test speed against iterative version. 
+        public static IEnumerable<int> Factor(int factorMe, 
+                bool proper = false) {
+            var factors = new SortedSet<int>();
+            foreach (var set in Utils.PowerSet(PrimeFactor(factorMe))) {
+                var product = 1;
+                foreach (var factor in set)
+                    product *= factor;
+                factors.Add(product);
+            }
+            if (proper)
+                factors.Remove(factorMe);
+            
+            return factors;
         }
 #endregion 
 
