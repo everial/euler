@@ -2,9 +2,12 @@ using System;
 using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace Euler {
 
+    /* Convenience methods for various ProjectEuler problems. 
+     */
     public static class Utils {
         /*
          * Slick version courtesy of Eric Lippert.
@@ -53,6 +56,15 @@ namespace Euler {
                     select set[i];
         }
 
+        public static IEnumerable<string> Readlines(string source) {
+            string line;
+            using (var file = new StreamReader(source)) {
+                while ((line = file.ReadLine()) != null) {
+                    yield return line;
+                }
+            }
+        }
+
         /* Approximate the square root of the given BigInteger.
          * WARNING: breaks when the square root exceeds Double.MaxValue.
          * TODO: fix!
@@ -66,7 +78,7 @@ namespace Euler {
          * NOTE: the combination of in-place and lazy can be tricky!
          */
         public static IEnumerable<IList<T>> Permutations<T>(IList<T> source) {
-            return Permute(source.Count(), source);
+            return Permute(source.Count, source);
         }
 
         private static IEnumerable<IList<T>> Permute<T>(int n, 
